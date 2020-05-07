@@ -7,7 +7,11 @@ function App() {
   const store = generateStore();
   return (
     <Provider store={store}>
-      <Pokemones/>
+        <div className="container-fluid p-0">
+            <div className="row m-0">
+                <Pokemones/>
+            </div>
+        </div>
     </Provider>
   );
 }
