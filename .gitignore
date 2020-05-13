@@ -25,7 +25,7 @@ yarn-error.log*
 .idea
 .firebase
 /src/firebase.js
-/firebaserc
+/.firebaserc
 /firebase.json
-/firebase.indexes.json
-/firebase.rules
+/firestore.indexes.json
+/firestore.rules
