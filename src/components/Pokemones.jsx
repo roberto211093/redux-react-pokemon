@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 // hooks react redux
 import {useDispatch, useSelector} from 'react-redux';
-// importamos la acción
+// importamos las acciones
 import {getPokemonsAction, getNextPokemonsAction, getPreviousPokemonsAction, getDetailAction} from '../redux/pokeDucks'
 import Detail from "./Detail";
 
@@ -24,7 +24,7 @@ const Pokemones = () => {
     return (
         fetching
             ? <div>cargando...</div>
-            : <React.Fragment>
+            : <>
                 <div className='col-sm-12 col-md-6'>
                     <div className='m-4'>
                         <h3>Pokemones!</h3>
@@ -66,9 +66,9 @@ const Pokemones = () => {
                         <Detail />
                     </div>
                 </div>
-            </React.Fragment>
+            </>
 
     )
 }
 
-export default Pokemones
+export default Pokemones;

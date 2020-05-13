@@ -7,7 +7,7 @@ const dataInit = {
     previous: null,
     results: []
 };
-const API = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20';
+const API = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10';
 const GET_POKEMONS = 'GET_POKEMONS';
 const GET_POKEMONS_SUCCESS = 'GET_POKEMONS_SUCCESS';
 const GET_POKEMONS_FAILURE = 'GET_POKEMONS_FAILURE';
