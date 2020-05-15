@@ -18,9 +18,12 @@ const Navbar = (props) => {
                 {
                     user !== null
                         ?
-                        <React.Fragment>
+                        <>
                             <NavLink to="/" className="btn btn-dark mr-2" exact>
                                 Inicio
+                            </NavLink>
+                            <NavLink to="/perfil" className="btn btn-dark mr-2" exact>
+                                Perfil
                             </NavLink>
                             <button
                                 className="btn btn-dark"
@@ -29,7 +32,7 @@ const Navbar = (props) => {
                             >
                                 Cerrar Session
                             </button>
-                        </React.Fragment>
+                        </>
                         : <NavLink
                             className="btn btn-dark"
                             to="/login"

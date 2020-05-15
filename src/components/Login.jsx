@@ -1,8 +1,7 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {loginGoogleAction} from '../redux/userDucks';
-import {auth, db} from '../firebase';
+import {loginEmailPassAction, createUserEmailPassAction, loginGoogleAction} from '../redux/userDucks';
 
 const Login = (props) => {
     const dispatch = useDispatch();
@@ -15,7 +14,6 @@ const Login = (props) => {
     const [esRegistro, setEsRegistro] = useState(false);
 
     useEffect(() => {
-        console.log('loggedIn',loggedIn);
         if (loggedIn){
             history.push('/');
         }
@@ -51,27 +49,14 @@ const Login = (props) => {
     }, [history]);
 
     const login = useCallback(async () => {
-        try {
-            const res = await auth.signInWithEmailAndPassword(email, password);
-            console.log('res: ', res);
-            isOk();
-        } catch (error) {
-            setError(error.message)
-        }
-    }, [email, password, isOk]);
+        dispatch(loginEmailPassAction(email,password));
+        isOk();
+    }, [dispatch, email, password, isOk]);
 
     const registrar = useCallback(async () => {
-        try {
-            const res = await auth.createUserWithEmailAndPassword(email, password);
-            await db.collection('usuarios').doc(res.user.email).set({
-                email: res.user.email,
-                uid: res.user.uid
-            });
-            isOk();
-        } catch (error) {
-            setError(error.message)
-        }
-    }, [email, password, isOk]);
+        dispatch(createUserEmailPassAction(email,password));
+        isOk();
+    }, [dispatch, email, password, isOk]);
 
     return (
         <div className="col-sm-12 mt-5 text-center">

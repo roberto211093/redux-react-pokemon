@@ -4,6 +4,7 @@ import {auth} from "./firebase";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Pokemones from './components/Pokemones';
+import Perfil from "./components/Perfil";
 
 function App() {
     const [user, setUser] = useState(false);
@@ -21,10 +22,10 @@ function App() {
         if(localStorage.getItem('usuario')){
             const usuarioStorage = JSON.parse(localStorage.getItem('usuario'))
             if(usuarioStorage.uid === user.uid){
-                console.log('son iguales')
+                // Son iguales
                 return <Route component={component} path={path} {...rest} />
             }else{
-                console.log('no exite')
+                // No exite
                 return <Redirect to="/login" {...rest} />
             }
         }else{
@@ -41,6 +42,7 @@ function App() {
                         <Route component={Login} path="/login"/>
                         {/* <Route component={Pokemones} path="/" exact/> */}
                         <RutaProtegida component={Pokemones} path="/" exact/>
+                        <RutaProtegida component={Perfil} path="/perfil" exact/>
                     </Switch>
                 </div>
             </div>
