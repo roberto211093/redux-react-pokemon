@@ -1,36 +1,53 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {fStorage} from "../firebase";
-import {updateUserAction} from "../redux/userDucks";
+import {updateImgAction, updateUserAction} from "../redux/userDucks";
 
 const IMGDEFAULT = "gs://rafa-pokemon.appspot.com/user.png";
 
 const Perfil = () => {
-    const {uid, email, displayName, photoURL} = useSelector(store => store.userPkm.user);
-    console.log('uid', uid);
+    const dispatch = useDispatch();
+    const {fetching, user} = useSelector(store => store.userPkm);
+    const {email, displayName, photoURL} = user;
     const [photo, setPhoto] = useState('');
     const [nombreUsuario, setNombreUsuario] = useState(displayName);
     const [activarForm, setActivarForm] = useState(false);
-
-    const dispatch = useDispatch();
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        if (IMGDEFAULT === photoURL) {
-            fStorage.refFromURL(photoURL).getDownloadURL()
-                .then((url) => {
-                        setPhoto(url);
-                    }
-                )
-                .catch((error) => {
-                    console.log('error', error);
-                })
-        } else {
-            setPhoto(photoURL);
+        const fetchData = async () => {
+            if (IMGDEFAULT === photoURL) {
+                const imgRef = await fStorage.refFromURL(photoURL);
+                const imgUrl = await imgRef.getDownloadURL();
+                setPhoto(imgUrl);
+            } else {
+                setPhoto(photoURL);
+            }
         }
+        fetchData();
     }, [setPhoto, photoURL]);
 
     const actualizarUsuario = () => {
+        if (!nombreUsuario.trim()) {
+            return
+        }
         dispatch(updateUserAction(nombreUsuario));
+        setActivarForm(false);
+    }
+
+    const seleccionarArchivo = (imgNew) => {
+        const img = imgNew.target.files[0];
+        if (img === undefined) {
+            console.log('No se selecciono imagen');
+            return;
+        }
+        if (img.type === "image/png" || img.type === "image/jpg") {
+            dispatch(updateImgAction(img));
+            setError(false);
+        } else {
+            setError(true);
+        }
+
     }
 
     return (
@@ -66,6 +83,34 @@ const Perfil = () => {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    )
+                }
+
+                {
+                    error && (
+                        <div className="alert alert-warning mb-4">
+                            Img debe ser en formato png o jpg
+                        </div>
+                    )
+                }
+                <div className="custom-file mb-4">
+                    <input type="file"
+                           id="inputGroupFile01"
+                           style={{display: 'none'}}
+                           onChange={e => seleccionarArchivo(e)}
+                           disabled={fetching}
+                    />
+                    <label className={fetching ? "btn btn-dark disabled" : "btn btn-dark"}
+                           htmlFor="inputGroupFile01">
+                        Actualizar Imagen</label>
+                </div>
+                {
+                    fetching && (
+                        <div className="mb-4 d-flex justify-content-center">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Cargando...</span>
                             </div>
                         </div>
                     )

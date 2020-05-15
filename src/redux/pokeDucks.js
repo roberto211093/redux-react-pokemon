@@ -52,7 +52,6 @@ export const getDetailAction = (url) => async (dispatch, getState) => {
     }
     try {
         const res = await axios.get(`${url}`);
-        console.log('getDetailAction', res)
         dispatch({
             type: GET_POKEMONS_DETAIL_SUCCESS,
             payload: {

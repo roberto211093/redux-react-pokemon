@@ -1,4 +1,4 @@
-import {firebase, auth, db} from "../firebase";
+import {firebase, auth, db, fStorage} from "../firebase";
 // Data Init
 const dataInit = {
     fetching: false,
@@ -147,8 +147,8 @@ export const closeSessionAction = () => (dispatch) => {
                 });
             }
         )
-        .catch((error) => {
-            console.log(error);
+        .catch((e) => {
+            console.log(e);
             dispatch({
                 type: CLOSE_SESSION_FAILURE,
             });
@@ -159,16 +159,45 @@ export const updateUserAction = (name) => async (dispatch, getState) => {
     dispatch({
         type: UPDATE_USER
     });
+    const {user} = getState().userPkm;
     try {
-        const {user} = getState().userPkm;
-        console.log(user);
-        console.log(name);
         await db.collection('usuarios').doc(user.email).update({
             displayName: name
         });
         const usuario = {
             ...user,
             displayName: name
+        };
+        dispatch({
+            type: UPDATE_USER_SUCCESS,
+            payload: usuario
+        });
+        localStorage.setItem('usuario', JSON.stringify(usuario));
+    } catch (e) {
+        console.error(e);
+        dispatch({
+            type: UPDATE_USER_FAILURE
+        });
+    }
+}
+
+export const updateImgAction = (img) => async (dispatch, getState) => {
+    dispatch({
+        type: UPDATE_USER
+    });
+    const {user} = getState().userPkm;
+    try {
+        const imagenRef = await fStorage.ref().child(user.email).child(`foto perfil ${user.uid}`);
+        // El res es la funcion de firebase para poder guardar
+        // El 1er child es el nombre de la carpeta y el segundo el nombre del archivo
+        await imagenRef.put(img);
+        const imagenUrl = await imagenRef.getDownloadURL(); //nos traemos la Url
+        await db.collection('usuarios').doc(user.email).update({
+            photoURL: imagenUrl
+        });
+        const usuario = {
+            ...user,
+            photoURL: imagenUrl
         };
         dispatch({
             type: UPDATE_USER_SUCCESS,
